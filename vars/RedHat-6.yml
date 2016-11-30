@@ -1,0 +1,3 @@
+---
+# vars file for .
+apache_maven_package_name: "apache-maven"

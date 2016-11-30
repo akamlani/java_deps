@@ -1,0 +1,85 @@
+---
+
+- name: Install sudo
+  package: name=sudo state=installed
+  ignore_errors: true
+
+- name: Add the RHEL6 Fedora maven repo
+  template:
+    src: "epel-apache-maven.repo"
+    dest: "/etc/yum.repos.d/epel-apache-maven.repo"
+    mode: 0644
+  sudo: true
+  when: ansible_os_family == 'RedHat' and ansible_distribution_major_version|int <= 6
+
+- name: Install RH epel
+  yum: name="epel-release" state=installed update_cache=yes
+  sudo: true
+  when: ansible_os_family == 'RedHat'
+
+- name: Install Debian-specific packages
+  apt: name="{{ item }}" state=installed
+  sudo: true
+  with_items:
+    - software-properties-common
+  when: ansible_os_family == 'Debian'
+
+- name: Install cmake apt repository
+  apt_repository: repo='ppa:george-edison55/cmake-3.x' state=present
+  when: ansible_os_family == 'Debian'
+
+- name: Update Debian cache
+  apt: update_cache=yes
+  when: ansible_os_family == 'Debian'
+
+- name: Load maven package name based on the OS type, or a default if not found.
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "../vars/{{ ansible_os_family }}-{{ ansible_distribution_major_version | int}}.yml"
+    - "../vars/default.yml"
+  when: apache_maven_package_name is not defined
+
+- name: Install Libjavacpp dependencies
+  package: name="{{ item }}" state=installed
+  sudo: true
+  with_items:
+    - git
+    - cmake
+    - gcc
+    - "{{ apache_maven_package_name }}"
+    - python-setuptools
+
+- name: Install Debian-specific Libjavacpp dependencies
+  apt: name="{{ item }}" state=installed
+  sudo: true
+  with_items:
+    - libopenblas-base
+    - libopenblas-dev
+    - libatlas-dev
+    - liblapack-dev
+  when: ansible_os_family == 'Debian'
+
+- name: Install Ubuntu 12.x-specific Libjavacpp dependencies
+  apt: name="{{ item }}" state=installed
+  sudo: true
+  with_items:
+    - libatlas3gf-base
+    - liblapack3gf
+  when: ansible_os_family == 'Debian' and ansible_distribution_major_version|int <= 12
+
+- name: Install Ubuntu 14.x-specific Libjavacpp dependencies
+  apt: name="{{ item }}" state=installed
+  sudo: true
+  with_items:
+    - libatlas3-base
+    - liblapack3
+  when: ansible_os_family == 'Debian' and ansible_distribution_major_version|int > 12
+
+- name: Install RH-specific Libjavacpp dependencies
+  yum: name="{{ item }}" state=installed
+  sudo: true
+  with_items:
+    - atlas
+    - blas
+    - lapack
+  when: ansible_os_family == 'RedHat'
