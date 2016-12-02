@@ -1,3 +1,5 @@
 ---
 # vars file for .
 apache_maven_package_name: "apache-maven"
+cuda_repo_subfolder: rhel6
+cuda_packaging_key_id: 7FA2AF80

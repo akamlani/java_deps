@@ -9,19 +9,26 @@
     src: "epel-apache-maven.repo"
     dest: "/etc/yum.repos.d/epel-apache-maven.repo"
     mode: 0644
-  sudo: true
+  become: true
   when: ansible_os_family == 'RedHat' and ansible_distribution_major_version|int <= 6
 
 - name: Install RH epel
   yum: name="epel-release" state=installed update_cache=yes
-  sudo: true
+  become: true
   when: ansible_os_family == 'RedHat'
 
 - name: Install Debian-specific packages
   apt: name="{{ item }}" state=installed
-  sudo: true
+  become: true
   with_items:
     - software-properties-common
+  when: ansible_os_family == 'Debian'
+
+- name: Trust packaging key for Cmake repository
+  apt_key:
+    data: "{{ lookup('file', 'files/gedison-ppa.asc') }}"
+    id: 828AB726
+    state: present
   when: ansible_os_family == 'Debian'
 
 - name: Install cmake apt repository
@@ -32,16 +39,40 @@
   apt: update_cache=yes
   when: ansible_os_family == 'Debian'
 
-- name: Load maven package name based on the OS type, or a default if not found.
+- name: "Gather OS specific variables"
   include_vars: "{{ item }}"
   with_first_found:
-    - "../vars/{{ ansible_os_family }}-{{ ansible_distribution_major_version | int}}.yml"
-    - "../vars/default.yml"
-  when: apache_maven_package_name is not defined
+    - "{{ ansible_distribution|lower }}-{{ ansible_distribution_version }}.yml"
+    - "{{ ansible_distribution|lower }}-{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_distribution|lower }}.yml"
+    - "{{ ansible_os_family|lower }}.yml"
+    - "default.yml"
+
+- block:
+  - include: configure_yum.yml
+    when: ansible_pkg_mgr == 'yum'
+
+  - include: configure_apt.yml
+    when: ansible_pkg_mgr == 'apt'
+
+  - name: Install CUDA and related packages (1.5-2GB download)
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items: "{{ cuda_packages }}"
+    when: ansible_os_family == 'RedHat' or ansible_distribution_major_version|int != 12
+
+  - name: Install CUDA for Ubuntu 12 (some packages unsigned)
+    apt:
+      name : "{{ item }}"
+      state: present
+      force: yes
+    with_items: "{{ cuda_packages }}"
+    when: ansible_os_family == 'Debian' and ansible_distribution_major_version|int == 12
 
 - name: Install Libjavacpp dependencies
   package: name="{{ item }}" state=installed
-  sudo: true
+  become: true
   with_items:
     - git
     - cmake
@@ -51,33 +82,19 @@
 
 - name: Install Debian-specific Libjavacpp dependencies
   apt: name="{{ item }}" state=installed
-  sudo: true
+  become: true
   with_items:
     - libopenblas-base
     - libopenblas-dev
     - libatlas-dev
     - liblapack-dev
+    - "{{ atlas_package_name}}"
+    - "{{ lapack_package_name }}"
   when: ansible_os_family == 'Debian'
-
-- name: Install Ubuntu 12.x-specific Libjavacpp dependencies
-  apt: name="{{ item }}" state=installed
-  sudo: true
-  with_items:
-    - libatlas3gf-base
-    - liblapack3gf
-  when: ansible_os_family == 'Debian' and ansible_distribution_major_version|int <= 12
-
-- name: Install Ubuntu 14.x-specific Libjavacpp dependencies
-  apt: name="{{ item }}" state=installed
-  sudo: true
-  with_items:
-    - libatlas3-base
-    - liblapack3
-  when: ansible_os_family == 'Debian' and ansible_distribution_major_version|int > 12
 
 - name: Install RH-specific Libjavacpp dependencies
   yum: name="{{ item }}" state=installed
-  sudo: true
+  become: true
   with_items:
     - atlas
     - blas
