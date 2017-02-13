@@ -24,6 +24,17 @@
     - software-properties-common
   when: ansible_os_family == 'Debian'
 
+- name: Trust packaging key for gcc-5 repository
+  apt_key:
+    data: "{{ lookup('file', 'files/ubuntu-toolchain-r-ppa.asc') }}"
+    id: BA9EF27F
+    state: present
+  when: ansible_os_family == 'Debian'
+
+- name: Install gcc-5 repository
+  apt_repository: repo='ppa:ubuntu-toolchain-r/test' state=present
+  when: ansible_os_family == 'Debian'
+
 - name: Trust packaging key for Cmake repository
   apt_key:
     data: "{{ lookup('file', 'files/gedison-ppa.asc') }}"
@@ -84,12 +95,28 @@
   apt: name="{{ item }}" state=installed
   become: true
   with_items:
+    - gcc-5
+    - g++-5
     - libopenblas-base
     - libopenblas-dev
     - libatlas-dev
     - liblapack-dev
     - "{{ atlas_package_name}}"
     - "{{ lapack_package_name }}"
+  when: ansible_os_family == 'Debian'
+
+- name: Select Ubuntu-specific gcc-5 alternative
+  alternatives:
+    name: gcc
+    link: /usr/bin/gcc
+    path: /usr/bin/gcc-5
+  when: ansible_os_family == 'Debian'
+
+- name: Select Ubuntu-specific gcc-5 alternative
+  alternatives:
+    name: gcc
+    link: /usr/bin/g++
+    path: /usr/bin/g++-5
   when: ansible_os_family == 'Debian'
 
 - name: Install RH-specific Libjavacpp dependencies
