@@ -2,3 +2,5 @@
 cuda_repo_subfolder: rhel7
 apache_maven_package_name: "maven"
 cuda_packaging_key_id: 7FA2AF80
+__java_packages:
+  - java-1.8.0-openjdk

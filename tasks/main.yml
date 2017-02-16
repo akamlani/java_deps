@@ -35,6 +35,17 @@
   apt_repository: repo='ppa:ubuntu-toolchain-r/test' state=present
   when: ansible_os_family == 'Debian'
 
+- name: Trust packaging key for OpenJDK repository
+  apt_key:
+    data: "{{ lookup('file', 'files/openjdk-ppa.asc') }}"
+    id: 86F44E2A
+    state: present
+  when: ansible_os_family == 'Debian'
+
+- name: Install openjdk apt repository
+  apt_repository: repo='ppa:openjdk-r/ppa' state=present
+  when: ansible_os_family == 'Debian'
+
 - name: Trust packaging key for Cmake repository
   apt_key:
     data: "{{ lookup('file', 'files/gedison-ppa.asc') }}"
@@ -127,3 +138,15 @@
     - blas
     - lapack
   when: ansible_os_family == 'RedHat'
+
+- name: Define java_packages.
+  set_fact:
+    java_packages: "{{ __java_packages | list }}"
+  when: java_packages is not defined
+
+- name: Install java packages
+  package:
+    name: "{{ item }}"
+    state: present
+  become: true
+  with_items: "{{ java_packages }}"
