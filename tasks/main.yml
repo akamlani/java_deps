@@ -117,6 +117,7 @@
   with_items:
     - git
     - cmake
+    - gcc
     - "{{ apache_maven_package_name }}"
     - python-setuptools
     - gcc
@@ -150,6 +151,14 @@
     path: /usr/bin/g++-5
   when: ansible_os_family == 'Debian'
 
+- name: Add the RHEL7 Fedora repo for gcc
+  template:
+    src: "epel7-fedora.repo"
+    dest: "/etc/yum.repos.d/epel7-fedora.repo"
+    mode: 0644
+  become: true
+  when: ansible_os_family == 'RedHat'
+
 - name: Install RH-specific Libjavacpp dependencies
   yum: name="{{ item }}" state=installed
   become: true
@@ -158,6 +167,7 @@
     - blas
     - lapack
     - cmake3
+    - gcc
   when: ansible_os_family == 'RedHat'
 
 - name: Check /usr/bin/cmake version 2.x is present
