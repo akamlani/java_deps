@@ -4,7 +4,7 @@
 #   - openjdk-8-jdk
 #   - openjdk-9-jdk
 __java_packages:
-  - openjdk-8
+  - default-jdk
 cuda_repo_subfolder: ubuntu1604
 cuda_packaging_key_id: 7FA2AF80
 apache_maven_package_name: "maven"
