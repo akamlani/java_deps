@@ -18,7 +18,7 @@
   when: ansible_os_family == 'RedHat'
 
 - name: Install Debian-specific packages
-  apt: name="{{ item }}" state=installed
+  apt: name="{{ item }}" state=installed install_recommends=no
   become: true
   with_items:
     - software-properties-common
@@ -89,6 +89,7 @@
       name : "{{ item }}"
       state: present
       force: yes
+      install_recommends: no
     with_items: "{{ cuda_packages }}"
     when: ansible_os_family == 'Debian' and ansible_distribution_major_version|int == 12
 
@@ -103,7 +104,7 @@
     - python-setuptools
 
 - name: Install Debian-specific Libjavacpp dependencies
-  apt: name="{{ item }}" state=installed
+  apt: name="{{ item }}" state=installed install_recommends=no
   become: true
   with_items:
     - gcc-5
