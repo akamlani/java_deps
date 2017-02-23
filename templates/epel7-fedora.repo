@@ -1,0 +1,7 @@
+# Place this file in your /etc/yum.repos.d/ directory
+
+[warning:fedora]
+name=fedora
+mirrorlist=http://mirrors.fedoraproject.org/mirrorlist?repo=fedora-22&arch=$basearch
+enabled=1
+gpgcheck=0

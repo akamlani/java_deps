@@ -12,13 +12,21 @@
   become: true
   when: ansible_os_family == 'RedHat' and ansible_distribution_major_version|int <= 6
 
+- name: Add the RHEL7 Fedora repo for gcc
+  template:
+    src: "epel7-fedora.repo"
+    dest: "/etc/yum.repos.d/epel7-fedora.repo"
+    mode: 0644
+  become: true
+  when: ansible_os_family == 'RedHat'
+
 - name: Install RH epel
   yum: name="epel-release" state=installed update_cache=yes
   become: true
   when: ansible_os_family == 'RedHat'
 
 - name: Install Debian-specific packages
-  apt: name="{{ item }}" state=installed
+  apt: name="{{ item }}" state=installed install_recommends=no
   become: true
   with_items:
     - software-properties-common
@@ -84,26 +92,38 @@
     with_items: "{{ cuda_packages }}"
     when: ansible_os_family == 'RedHat' or ansible_distribution_major_version|int != 12
 
+  - name: Add Cuda to the PATH
+    copy:
+      src: files/cuda-8.0.sh
+      dest: /etc/profile.d/cuda-8.0.sh
+      owner: root
+      group: root
+      mode: 0644
+      backup: yes
+    when: ansible_os_family == 'RedHat'
+
   - name: Install CUDA for Ubuntu 12 (some packages unsigned)
     apt:
       name : "{{ item }}"
       state: present
       force: yes
+      install_recommends: no
     with_items: "{{ cuda_packages }}"
     when: ansible_os_family == 'Debian' and ansible_distribution_major_version|int == 12
 
 - name: Install Libjavacpp dependencies
-  package: name="{{ item }}" state=installed
+  package: name="{{ item }}" state=installed update_cache=yes
   become: true
   with_items:
     - git
     - cmake
-    - gcc
     - "{{ apache_maven_package_name }}"
     - python-setuptools
+    - gcc
+    - wget
 
 - name: Install Debian-specific Libjavacpp dependencies
-  apt: name="{{ item }}" state=installed
+  apt: name="{{ item }}" state=installed install_recommends=no
   become: true
   with_items:
     - gcc-5
@@ -137,6 +157,33 @@
     - atlas
     - blas
     - lapack
+    - cmake3
+  when: ansible_os_family == 'RedHat'
+
+- name: Check /usr/bin/cmake version 2.x is present
+  stat: path=/usr/bin/cmake
+  register: cmake_stat
+  when: ansible_os_family == 'RedHat'
+
+- name: Move previous version of cmake
+  command: mv /usr/bin/cmake /usr/bin/cmake2
+  become: true
+  when: ansible_os_family == 'RedHat' and cmake_stat.stat.exists
+
+- name: register previous RedHat-specific cmake alternative
+  alternatives:
+    name: cmake
+    link: /usr/bin/cmake
+    path: /usr/bin/cmake2
+    priority: 50
+  when: ansible_os_family == 'RedHat' and cmake_stat.stat.exists
+
+- name: Select RedHat-specific cmake alternative
+  alternatives:
+    name: cmake
+    link: /usr/bin/cmake
+    path: /usr/bin/cmake3
+    priority: 100
   when: ansible_os_family == 'RedHat'
 
 - name: Define java_packages.
