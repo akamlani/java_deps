@@ -139,14 +139,6 @@
     path: /usr/bin/g++-5
   when: ansible_os_family == 'Debian'
 
-- name: Select RedHat-specific cmake alternative
-  alternatives:
-    name: cmake
-    link: /usr/bin/cmake
-    path: /usr/bin/cmake3
-    priority: 100
-  when: ansible_os_family == 'RedHat'
-
 - name: Install RH-specific Libjavacpp dependencies
   yum: name="{{ item }}" state=installed
   become: true
@@ -156,6 +148,32 @@
     - lapack
     - cmake3
   when: ansible_os_family == 'RedHat'
+
+- name: Check /usr/bin/cmake version 2.x is present
+  stat: path=/usr/bin/cmake
+  register: cmake_stat
+  when: ansible_os_family == 'RedHat'
+
+- name: Move previous version of cmake
+  command: mv /usr/bin/cmake /usr/bin/cmake2
+  become: true
+  when: ansible_os_family == 'RedHat' and cmake_stat.stat.exists
+
+- name: Select RedHat-specific cmake alternative
+  alternatives:
+    name: cmake
+    link: /usr/bin/cmake
+    path: /usr/bin/cmake3
+    priority: 100
+  when: ansible_os_family == 'RedHat'
+
+- name: register previous RedHat-specific cmake alternative
+  alternatives:
+    name: cmake
+    link: /usr/bin/cmake
+    path: /usr/bin/cmake2
+    priority: 50
+  when: ansible_os_family == 'RedHat' and cmake_stat.stat.exists
 
 - name: Define java_packages.
   set_fact:
