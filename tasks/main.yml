@@ -169,14 +169,6 @@
   become: true
   when: ansible_os_family == 'RedHat' and cmake_stat.stat.exists
 
-- name: Select RedHat-specific cmake alternative
-  alternatives:
-    name: cmake
-    link: /usr/bin/cmake
-    path: /usr/bin/cmake3
-    priority: 100
-  when: ansible_os_family == 'RedHat'
-
 - name: register previous RedHat-specific cmake alternative
   alternatives:
     name: cmake
@@ -184,6 +176,14 @@
     path: /usr/bin/cmake2
     priority: 50
   when: ansible_os_family == 'RedHat' and cmake_stat.stat.exists
+
+- name: Select RedHat-specific cmake alternative
+  alternatives:
+    name: cmake
+    link: /usr/bin/cmake
+    path: /usr/bin/cmake3
+    priority: 100
+  when: ansible_os_family == 'RedHat'
 
 - name: Define java_packages.
   set_fact:
