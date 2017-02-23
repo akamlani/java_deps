@@ -12,6 +12,14 @@
   become: true
   when: ansible_os_family == 'RedHat' and ansible_distribution_major_version|int <= 6
 
+- name: Add the RHEL7 Fedora repo for gcc
+  template:
+    src: "epel7-fedora.repo"
+    dest: "/etc/yum.repos.d/epel7-fedora.repo"
+    mode: 0644
+  become: true
+  when: ansible_os_family == 'RedHat'
+
 - name: Install RH epel
   yum: name="epel-release" state=installed update_cache=yes
   become: true
@@ -131,6 +139,14 @@
     path: /usr/bin/g++-5
   when: ansible_os_family == 'Debian'
 
+- name: Select RedHat-specific cmake alternative
+  alternatives:
+    name: cmake
+    link: /usr/bin/cmake
+    path: /usr/bin/cmake3
+    priority: 100
+  when: ansible_os_family == 'RedHat'
+
 - name: Install RH-specific Libjavacpp dependencies
   yum: name="{{ item }}" state=installed
   become: true
@@ -138,6 +154,7 @@
     - atlas
     - blas
     - lapack
+    - cmake3
   when: ansible_os_family == 'RedHat'
 
 - name: Define java_packages.
