@@ -92,6 +92,16 @@
     with_items: "{{ cuda_packages }}"
     when: ansible_os_family == 'RedHat' or ansible_distribution_major_version|int != 12
 
+  - name: Add Cuda to the PATH
+    copy:
+      src: files/cuda-8.0.sh
+      dest: /etc/profile.d/cuda-8.0.sh
+      owner: root
+      group: root
+      mode: 0644
+      backup: yes
+    when: ansible_os_family == 'RedHat'
+
   - name: Install CUDA for Ubuntu 12 (some packages unsigned)
     apt:
       name : "{{ item }}"
