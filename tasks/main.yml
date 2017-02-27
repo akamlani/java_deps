@@ -117,10 +117,8 @@
   with_items:
     - git
     - cmake
-    - gcc
     - "{{ apache_maven_package_name }}"
     - python-setuptools
-    - gcc
     - wget
 
 - name: Install Debian-specific Libjavacpp dependencies
