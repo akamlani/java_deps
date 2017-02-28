@@ -12,18 +12,10 @@
   become: true
   when: ansible_os_family == 'RedHat' and ansible_distribution_major_version|int <= 6
 
-- name: Enable software collections or RedHat
-  yum: name="centos-release-scl" state=installed update_cache=yes
+- name: Install RH epel
+  yum: name="epel-release" state=installed update_cache=yes
   become: true
   when: ansible_os_family == 'RedHat'
-
-# - name: Add the RHEL7 Fedora repo for gcc
-#   template:
-#     src: "epel7-fedora.repo"
-#     dest: "/etc/yum.repos.d/epel7-fedora.repo"
-#     mode: 0644
-#   become: true
-#   when: ansible_os_family == 'RedHat'
 
 - name: Install Debian-specific packages
   apt: name="{{ item }}" state=installed install_recommends=no
@@ -165,7 +157,7 @@
     - blas
     - lapack
     - cmake3
-    - devtoolset-4
+    - centos-release-scl
   when: ansible_os_family == 'RedHat'
 
 - name: Check /usr/bin/cmake version 2.x is present
