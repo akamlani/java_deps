@@ -159,15 +159,15 @@
     - devtoolset-4-gcc
   when: ansible_os_family == 'RedHat'
 
-  - name: Enable devtoolset by default
-    copy:
-      src: files/devtoolset-4.sh
-      dest: /etc/profile.d/devtoolset-4.sh
-      owner: root
-      group: root
-      mode: 0644
-      backup: yes
-    when: ansible_os_family == 'RedHat'
+- name: Enable devtoolset by default
+  copy:
+    src: files/devtoolset-4.sh
+    dest: /etc/profile.d/devtoolset-4.sh
+    owner: root
+    group: root
+    mode: 0644
+    backup: yes
+  when: ansible_os_family == 'RedHat'
 
 - name: Check /usr/bin/cmake version 2.x is present
   stat: path=/usr/bin/cmake
