@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/huitseeker/java_deps.svg)](https://travis-ci.org/huitseeker/java_deps)
-
 java_deps
 =========
 
