@@ -156,6 +156,7 @@
   yum: name="{{ item }}" state=installed update_cache=yes
   become: true
   with_items:
+    - redhat-lsb-core
     - devtoolset-4-gcc
   when: ansible_os_family == 'RedHat'
 
