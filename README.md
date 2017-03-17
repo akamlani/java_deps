@@ -1,4 +1,4 @@
-java_deps
+Deeplearning4j build environment
 =========
 
 This is a provisioning role to create build machines capable of building the
