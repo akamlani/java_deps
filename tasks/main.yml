@@ -157,7 +157,9 @@
   become: true
   with_items:
     - redhat-lsb-core
+    - rpm-build
     - devtoolset-4-gcc
+    - devtoolset-4-gcc-c++
   when: ansible_os_family == 'RedHat'
 
 - name: Enable devtoolset by default
