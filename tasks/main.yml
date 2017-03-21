@@ -213,7 +213,7 @@
     depth: 1
     accept_hostkey: true
     update: true
-  when: ansible_os_family == 'RedHat'
+  when: ansible_os_family == 'RedHat' and ansible_distribution_major_version|int > 6
 
 - name: make zookeeper package
   shell: make rpm
@@ -224,7 +224,7 @@
 - name: install zookeeper
   shell: rpm -ih /tmp/zookeeper-package/$(uname -i)/zookeeper-3.4.9-1.$(uname -i).rpm
   become: yes
-  when: ansible_os_family == 'RedHat'
+  when: ansible_os_family == 'RedHat' and ansible_distribution_major_version|int > 6
 
 - name: Define java_packages.
   set_fact:
