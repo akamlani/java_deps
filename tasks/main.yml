@@ -94,6 +94,10 @@
       backup: yes
     when: ansible_os_family == 'RedHat'
 
+  - name: Source CUDA
+    shell: . /etc/profile.d/cuda-8.0.sh
+    when: ansible_os_family == 'RedHat'
+
   - name: Install CUDA for Ubuntu 12 (some packages unsigned)
     apt:
       name : "{{ item }}"
@@ -123,6 +127,7 @@
     - libopenblas-dev
     - libatlas-dev
     - liblapack-dev
+    - zookeeper
     - "{{ atlas_package_name}}"
     - "{{ lapack_package_name }}"
   when: ansible_os_family == 'Debian'
@@ -134,9 +139,9 @@
     path: /usr/bin/gcc-5
   when: ansible_os_family == 'Debian'
 
-- name: Select Ubuntu-specific gcc-5 alternative
+- name: Select Ubuntu-specific g++-5 alternative
   alternatives:
-    name: gcc
+    name: g++
     link: /usr/bin/g++
     path: /usr/bin/g++-5
   when: ansible_os_family == 'Debian'
@@ -172,6 +177,9 @@
     backup: yes
   when: ansible_os_family == 'RedHat'
 
+- name: source devtoolset
+  shell: . /etc/profile.d/devtoolset-4.sh
+
 - name: Check /usr/bin/cmake version 2.x is present
   stat: path=/usr/bin/cmake
   register: cmake_stat
@@ -196,6 +204,26 @@
     link: /usr/bin/cmake
     path: /usr/bin/cmake3
     priority: 100
+  when: ansible_os_family == 'RedHat'
+
+- name: clone zookeeper packaging repo
+  git:
+    repo: https://github.com/id/zookeeper-el7-rpm.git
+    dest: /tmp/zookeeper-package
+    depth: 1
+    accept_hostkey: true
+    update: true
+  when: ansible_os_family == 'RedHat'
+
+- name: make zookeeper package
+  shell: make rpm
+  args:
+    chdir: "/tmp/zookeeper-package"
+  when: ansible_os_family == 'RedHat'
+
+- name: install zookeeper
+  shell: rpm -ih /tmp/zookeeper-package/$(uname -i)/zookeeper-3.4.9-1.$(uname -i).rpm
+  become: yes
   when: ansible_os_family == 'RedHat'
 
 - name: Define java_packages.
