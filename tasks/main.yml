@@ -94,10 +94,6 @@
       backup: yes
     when: ansible_os_family == 'RedHat'
 
-  - name: Source CUDA
-    shell: . /etc/profile.d/cuda-8.0.sh
-    when: ansible_os_family == 'RedHat'
-
   - name: Install CUDA for Ubuntu 12 (some packages unsigned)
     apt:
       name : "{{ item }}"
@@ -176,9 +172,6 @@
     mode: 0644
     backup: yes
   when: ansible_os_family == 'RedHat'
-
-- name: source devtoolset
-  shell: . /etc/profile.d/devtoolset-4.sh
 
 - name: Check /usr/bin/cmake version 2.x is present
   stat: path=/usr/bin/cmake
