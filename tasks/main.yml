@@ -212,14 +212,21 @@
   shell: make rpm
   args:
     chdir: "/tmp/zookeeper-package"
-  when: ansible_os_family == 'RedHat'
+  when: ansible_os_family == 'RedHat' and ansible_distribution_major_version|int > 6
+
+- file: path=/opt/zookeeper state=directory mode=0755 owner=root
+  when: ansible_os_family == 'RedHat' and ansible_distribution_major_version|int > 6
+
+- name: list rpm
+  command: find /tmp/zookeeper-package/x86_64/ -iname "zookeeper-*.rpm"
+  register: dumprpm
+  when: ansible_os_family == 'RedHat' and ansible_distribution_major_version|int > 6
 
 - name: install zookeeper
   yum:
-    name: "{{item }}"
+    name: "{{ dumprpm.stdout_lines }}"
     state: present
   become: yes
-  with_fileglob: "/tmp/zookeeper-package/x86_64/zookeeper-*.rpm"
   when: ansible_os_family == 'RedHat' and ansible_distribution_major_version|int > 6
 
 - name: Define java_packages.
