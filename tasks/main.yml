@@ -216,9 +216,10 @@
 
 - name: install zookeeper
   yum:
-    name: /tmp/zookeeper-package/x86_64/zookeeper-3.4.9-1.x86_64.rpm
+    name: "{{item }}"
     state: present
   become: yes
+  with_fileglob: "/tmp/zookeeper-package/x86_64/zookeeper-*.rpm"
   when: ansible_os_family == 'RedHat' and ansible_distribution_major_version|int > 6
 
 - name: Define java_packages.
