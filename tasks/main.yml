@@ -4,7 +4,7 @@
   package: name=sudo state=installed
   ignore_errors: true
 
-- name: Add the RHEL6 Fedora maven repo
+- name: Add the RHEL Fedora maven repo
   template:
     src: "epel-apache-maven.repo"
     dest: "/etc/yum.repos.d/epel-apache-maven.repo"
@@ -216,7 +216,7 @@
 
 - name: install zookeeper
   yum:
-    name: /tmp/zookeeper-package/$(uname -i)/zookeeper-3.4.9-1.$(uname -i).rpm
+    name: /tmp/zookeeper-package/x86_64/zookeeper-3.4.9-1.x86_64.rpm
     state: present
   become: yes
   when: ansible_os_family == 'RedHat' and ansible_distribution_major_version|int > 6
