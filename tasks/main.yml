@@ -124,6 +124,7 @@
     - libatlas-dev
     - liblapack-dev
     - zookeeper
+    - zlib1g-dev
     - "{{ atlas_package_name}}"
     - "{{ lapack_package_name }}"
   when: ansible_os_family == 'Debian'
@@ -159,6 +160,7 @@
   with_items:
     - redhat-lsb-core
     - rpm-build
+    - zlib-devel
     - devtoolset-4-gcc
     - devtoolset-4-gcc-c++
   when: ansible_os_family == 'RedHat'
