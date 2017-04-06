@@ -129,6 +129,30 @@
     - "{{ lapack_package_name }}"
   when: ansible_os_family == 'Debian'
 
+- name: Add the zookeeper service
+  template:
+    src: "zookeeper.service"
+    dest: "/usr/lib/systemd/system/zookeeper.ervice"
+    mode: 0644
+  become: true
+  when: ansible_os_family == 'Debian'
+
+- name: Add the zookeeper config template
+  template:
+    src: "zookeeper.cfg"
+    dest: "/etc/zookeeper/zoo.cfg"
+    mode: 0644
+  become: true
+  when: ansible_os_family == 'Debian'
+
+- name: Add the zookeeper environment file
+  template:
+    src: "zookeeper"
+    dest: "/etc/sysconfig/zookeeper"
+    mode: 0644
+  become: true
+  when: ansible_os_family == 'Debian'
+
 - name: Select Ubuntu-specific gcc-5 alternative
   alternatives:
     name: gcc
