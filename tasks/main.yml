@@ -112,8 +112,6 @@
     - "{{ apache_maven_package_name }}"
     - python-setuptools
     - wget
-    - screen
-    - tmux
 
 - name: Install Debian-specific Libjavacpp dependencies
   apt: name="{{ item }}" state=installed install_recommends=no
