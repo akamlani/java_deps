@@ -255,6 +255,14 @@
   become: yes
   when: ansible_os_family == 'RedHat' and ansible_distribution_major_version|int > 6
 
+- name: enable the zookeeper daemon
+  systemd:
+    name: zookeeper
+    daemon_reload: yes
+    enabled: yes
+    masked: no
+  when: ansible_os_family == 'RedHat' and ansible_distribution_major_version|int > 6
+  
 - name: Define java_packages.
   set_fact:
     java_packages: "{{ __java_packages | list }}"
