@@ -4,3 +4,5 @@ apache_maven_package_name: "apache-maven"
 cuda_packaging_key_id: 7FA2AF80
 __java_packages:
   - java-1.8.0-openjdk
+cuda_packages:
+  - cuda-8-0-8.0.61

@@ -14,7 +14,7 @@ galaxy_info:
   # - Apache
   # - CC-BY
   license: Apache
-  min_ansible_version: 2.0 # because of package module
+  min_ansible_version: 2.3 # because of yum / skip_broken
   #
   # Below are all platforms currently available. Just uncomment
   # the ones that apply to your role. If you don't see your
