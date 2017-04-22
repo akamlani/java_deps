@@ -103,9 +103,9 @@
       name: "{{ item }}"
       state: latest
       skip_broken: true
+      enablerepo: nvidia
     with_items: "{{ cuda_packages }}"
     when: ansible_os_family == 'RedHat'
-    ignore_errors: true
     
   - name: Install CUDA and related packages (1.5-2GB download)
     package:
@@ -285,13 +285,18 @@
   become: yes
   when: ansible_os_family == 'RedHat' and ansible_distribution_major_version|int > 6
 
+- name: test if we are in docker started with /sbin/init
+  shell: systemctl > /dev/null
+  ignore_errors: true
+  register: systemctl_active
+  
 - name: enable the zookeeper daemon
   systemd:
     name: zookeeper
     daemon_reload: yes
     enabled: yes
     masked: no
-  when: ansible_os_family == 'RedHat' and ansible_distribution_major_version|int > 6
+  when: ansible_os_family == 'RedHat' and ansible_distribution_major_version|int > 6 and systemctl_active.rc == 0
   
 - name: Define java_packages.
   set_fact:
