@@ -5,4 +5,31 @@ cuda_packaging_key_id: 7FA2AF80
 __java_packages:
   - java-1.8.0-openjdk
 cuda_packages:
-  - cuda-8-0-8.0.61
+  - cuda-cusolver-dev-8-0-8.0.44-1
+  - cuda-driver-dev-8-0-8.0.44-1
+  - cuda-visual-tools-8-0-8.0.44-1
+  - cuda-nvgraph-dev-8-0-8.0.44-1
+  - cuda-curand-dev-8-0-8.0.44-1
+  - cuda-license-8-0-8.0.44-1
+  - cuda-cublas-dev-8-0-8.0.44-1
+  - cuda-nvrtc-dev-8-0-8.0.44-1
+  - cuda-cudart-dev-8-0-8.0.44-1
+  - cuda-nvml-dev-8-0-8.0.44-1
+  - cuda-core-8-0-8.0.44-1
+  - cuda-misc-headers-8-0-8.0.44-1
+  - cuda-command-line-tools-8-0-8.0.44-1
+  - cuda-cufft-dev-8-0-8.0.44-1
+  - cuda-cusparse-dev-8-0-8.0.44-1
+  - cuda-npp-dev-8-0-8.0.44-1
+  - cuda-samples-8-0-8.0.44-1
+  - cuda-cublas-8-0-8.0.44-1
+  - cuda-cufft-8-0-8.0.44-1
+  - cuda-license-8-0-8.0.44-1
+  - cuda-cusolver-8-0-8.0.44-1
+  - cuda-curand-8-0-8.0.44-1
+  - cuda-nvrtc-8-0-8.0.44-1
+  - cuda-drivers-375.26-1
+  - cuda-cusparse-8-0-8.0.44-1
+  - cuda-nvgraph-8-0-8.0.44-1
+  - cuda-npp-8-0-8.0.44-1
+  - cuda-cudart-8-0-8.0.44-1

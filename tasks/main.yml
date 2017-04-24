@@ -77,36 +77,15 @@
   - include: configure_apt.yml
     when: ansible_pkg_mgr == 'apt'
 
-  - get_url:
-     url: "http://developer.download.nvidia.com/compute/cuda/repos/rhel7/x86_64/cuda-samples-8-0-8.0.61-1.x86_64.rpm"
-     dest: /tmp/cuda-samples-8-0-8.0.61-1.x86_64.rpm
-    when: ansible_os_family == 'RedHat' and ansible_distribution_major_version|int > 6
-
-  - yum:
-     name: /tmp/cuda-samples-8-0-8.0.61-1.x86_64.rpm
-     state: present
-    when: ansible_os_family == 'RedHat' and ansible_distribution_major_version|int > 6
-
-
-  - get_url:
-     url: "http://developer.download.nvidia.com/compute/cuda/repos/rhel7/x86_64/cuda-samples-8-0-8.0.61-1.x86_64.rpm"
-     dest: /tmp/cuda-visual-tools-8-0-8.0.61-1.x86_64.rpm
-    when: ansible_os_family == 'RedHat' and ansible_distribution_major_version|int > 6
-
-  - yum:
-     name: /tmp/cuda-visual-tools-8-0-8.0.61-1.x86_64.rpm
-     state: present
-    when: ansible_os_family == 'RedHat' and ansible_distribution_major_version|int > 6
-      
   - name: Install CUDA and related packages (1.5-2GB download)
     yum:
       name: "{{ item }}"
-      state: latest
+      state: present
       skip_broken: true
       enablerepo: nvidia
     with_items: "{{ cuda_packages }}"
     when: ansible_os_family == 'RedHat'
-    
+
   - name: Install CUDA and related packages (1.5-2GB download)
     package:
       name: "{{ item }}"
