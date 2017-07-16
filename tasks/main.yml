@@ -268,7 +268,7 @@
   shell: systemctl > /dev/null
   ignore_errors: true
   register: systemctl_active
-  
+
 - name: enable the zookeeper daemon
   systemd:
     name: zookeeper
@@ -276,7 +276,7 @@
     enabled: yes
     masked: no
   when: ansible_os_family == 'RedHat' and ansible_distribution_major_version|int > 6 and systemctl_active.rc == 0
-  
+
 - name: Define java_packages.
   set_fact:
     java_packages: "{{ __java_packages | list }}"
@@ -288,3 +288,10 @@
     state: present
   become: true
   with_items: "{{ java_packages }}"
+
+- name: Define python packages
+  package:
+    name: "{{ item }}"
+    state: present
+  become: true
+  with_items: "{{ python_packages }}"

@@ -10,3 +10,6 @@ cuda_packaging_key_id: 7FA2AF80
 apache_maven_package_name: "maven"
 atlas_package_name: libatlas3-base
 lapack_package_name: liblapack3
+python_packages:
+  - cython
+  - python-pip

@@ -33,3 +33,6 @@ cuda_packages:
   - cuda-nvgraph-8-0-8.0.44-1
   - cuda-npp-8-0-8.0.44-1
   - cuda-cudart-8-0-8.0.44-1
+python_packages:
+  - Cython
+  - python-pip

@@ -6,3 +6,6 @@ atlas_package_name: libatlas3-base
 lapack_package_name: liblapack3
 __java_packages:
   - openjdk-8-jdk
+python_packages:
+  - cython
+  - python-pip
