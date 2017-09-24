@@ -13,11 +13,11 @@
   when: ansible_os_family == 'RedHat'
 
 - name: Add Maven repo
-  apt_repository: repo='ppa:andrei-pozolotin/maven3' state=present
+  apt_repository: repo='ppa:andrei-pozolotin/maven3' state=present update_cache=yes
   when: ansible_os_family == 'Debian'
 
 - name: Add Java repo
-  apt_repository: repo='ppa:webupd8team/java' state=present
+  apt_repository: repo='ppa:openjdk-r/ppa' state=present update_cache=yes
   when: ansible_os_family == 'Debian'
 
 - name: Install RH epel
