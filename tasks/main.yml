@@ -141,7 +141,7 @@
 - name: Add the zookeeper service
   template:
     src: "zookeeper.service"
-    dest: "/usr/lib/systemd/system/zookeeper.ervice"
+    dest: "/usr/lib/zookeeper.service"
     mode: 0644
   become: true
   when: ansible_os_family == 'Debian'
@@ -157,7 +157,7 @@
 - name: Add the zookeeper environment file
   template:
     src: "zookeeper"
-    dest: "/etc/sysconfig/zookeeper"
+    dest: "/etc/zookeeper"
     mode: 0644
   become: true
   when: ansible_os_family == 'Debian'

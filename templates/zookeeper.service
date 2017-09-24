@@ -5,7 +5,7 @@ After=network.target
 [Service]
 User=zookeeper
 Group=zookeeper
-EnvironmentFile=/etc/sysconfig/zookeeper
+EnvironmentFile=/etc/zookeeper
 ExecStart=/bin/java -cp $CLASSPATH $LOG4J $JVMFLAGS $ZOOMAIN $ZOOCFG
 
 [Install]
