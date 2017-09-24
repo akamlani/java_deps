@@ -12,6 +12,14 @@
   become: true
   when: ansible_os_family == 'RedHat'
 
+- name: Add Maven repo
+  apt_repository: repo='ppa:andrei-pozolotin/maven3' state=present
+  when: ansible_os_family == 'Debian'
+
+- name: Add Java repo
+  apt_repository: repo='ppa:webupd8team/java' state=present
+  when: ansible_os_family == 'Debian'
+
 - name: Install RH epel
   yum: name="epel-release" state=installed update_cache=yes
   become: true
